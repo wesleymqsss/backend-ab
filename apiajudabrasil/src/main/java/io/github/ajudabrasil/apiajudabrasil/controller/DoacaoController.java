@@ -1,5 +1,7 @@
 package io.github.ajudabrasil.apiajudabrasil.controller;
 
+import io.github.ajudabrasil.apiajudabrasil.DTO.DoacaoResponseDTO;
+import io.github.ajudabrasil.apiajudabrasil.DTO.UsuarioResponseDTO;
 import io.github.ajudabrasil.apiajudabrasil.model.Doacao;
 import io.github.ajudabrasil.apiajudabrasil.model.Usuario;
 import io.github.ajudabrasil.apiajudabrasil.repository.DoacaoRepository;
@@ -33,8 +35,19 @@ public class DoacaoController {
     }
 
     @GetMapping("/usuario/{id}")
-    public List<Doacao> doacaoPorId(@PathVariable("id") String id){
-        return doacaoRepository.findByUsuarioId(id);
+    public List<DoacaoResponseDTO> doacaoPorId(@PathVariable("id") String id){
+       List<Doacao> doacoes = doacaoRepository.findByUsuarioId(id);
+
+       return doacoes.stream().map(doacao -> new DoacaoResponseDTO(
+               doacao.getId(),
+               doacao.getDoador(),
+               doacao.getTipoDoacao(),
+               doacao.getDataDoacao(),
+               new UsuarioResponseDTO(
+                       doacao.getUsuario().getId(),
+                       doacao.getUsuario().getNome()
+               )
+       )).toList();
     }
 
 
