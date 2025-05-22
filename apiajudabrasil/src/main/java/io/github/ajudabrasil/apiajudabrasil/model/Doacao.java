@@ -61,6 +61,4 @@ public class Doacao {
     public Doacao() {
         this.id = UUID.randomUUID().toString();
     }
-
-    // getters e setters
 }
