@@ -1,5 +1,6 @@
 package io.github.ajudabrasil.apiajudabrasil.controller;
 
+import io.github.ajudabrasil.apiajudabrasil.DTO.ChangePasswordRequestDTO;
 import io.github.ajudabrasil.apiajudabrasil.DTO.LoginRequestDTO;
 import io.github.ajudabrasil.apiajudabrasil.DTO.LoginResponse;
 import io.github.ajudabrasil.apiajudabrasil.model.Usuario;
@@ -77,5 +78,35 @@ public class UsuarioController {
     public void atualizar(@PathVariable("id") String id, @RequestBody Usuario usuario){
         usuario.setId(id);
         usuarioRepository.save(usuario);
+    }
+
+    @PutMapping("/alterar-senha")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequestDTO changePasswordRequest){
+        System.out.println("Tentativa de mudanca de senha para: " + changePasswordRequest.getEmail());
+
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(changePasswordRequest.getEmail());
+
+        if(!usuarioOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado com o email fornecido.");
+        }
+
+        Usuario usuario = usuarioOptional.get();
+
+        if(changePasswordRequest.getNewPassword() == null || changePasswordRequest.getNewPassword().isEmpty()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A nova senha não pode ser vazia");
+        }
+
+        if(passwordEncoder.matches(changePasswordRequest.getNewPassword(), usuario.getSenha())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A nova senha senha não pode ser igual a senha atual.");
+        }
+
+        //Hashear nova senha
+        String novaSenhaHasheada =  passwordEncoder.encode(changePasswordRequest.getNewPassword());
+        usuario.setSenha(novaSenhaHasheada);
+
+        usuarioRepository.save(usuario);
+
+        System.out.println("Senha atualizada com sucesso para o usuário: " + usuario.getEmail());
+        return ResponseEntity.ok("Senha Atualizada com sucesso!!!");
     }
 }
