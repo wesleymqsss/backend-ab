@@ -14,6 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
     Optional<Usuario> findByEmail(String email);
 
-    @Query("SELECT new io.github.ajudabrasil.apiajudabrasil.DTO.LoginResponse(u.email, u.senha) FROM Usuario u WHERE u.email = :email") // <<-- ')' REMOVIDO DO FINAL
+    @Query("SELECT new io.github.ajudabrasil.apiajudabrasil.DTO.LoginResponse(u.email, u.senha, u.id) FROM Usuario u WHERE u.email = :email") // <<-- ')' REMOVIDO DO FINAL
     Optional<LoginResponse> findLoginInfoByEmail(@Param("email") String email);
 }

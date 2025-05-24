@@ -29,6 +29,7 @@ public class DoacaoController {
 
         doacao.setId(UUID.randomUUID().toString());
         doacao.setUsuario(usuario);
+        doacao.setStatusDoacao("pendente");
 
         return doacaoRepository.save(doacao);
     }
@@ -42,6 +43,7 @@ public class DoacaoController {
                doacao.getDoador(),
                doacao.getTipoDoacao(),
                doacao.getDataDoacao(),
+               doacao.getStatusDoacao(),
                new UsuarioResponseDTO(
                        doacao.getUsuario().getId(),
                        doacao.getUsuario().getNome()

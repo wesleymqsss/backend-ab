@@ -1,16 +1,26 @@
 package io.github.ajudabrasil.apiajudabrasil.DTO;
 
-public class LoginResponse { // Ou LoginResponseDTO
+public class LoginResponse {
     private String token;
     private String email;
+    private String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public LoginResponse() {
     }
 
 
-    public LoginResponse(String token, String email) {
+    public LoginResponse(String token, String email,  String id) {
         this.token = token;
         this.email = email;
+        this.id =  id;
     }
 
 

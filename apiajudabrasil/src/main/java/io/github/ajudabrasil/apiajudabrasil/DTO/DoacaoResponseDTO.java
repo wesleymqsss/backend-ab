@@ -8,13 +8,23 @@ public class DoacaoResponseDTO {
     private String tipoDoacao;
     private LocalDateTime dataDoacao;
     private UsuarioResponseDTO usuario;
+    private String statusDoacao;
 
-    public DoacaoResponseDTO(String id, String doador, String tipoDoacao, LocalDateTime dataDoacao, UsuarioResponseDTO usuario) {
+    public DoacaoResponseDTO(String id, String doador, String tipoDoacao, LocalDateTime dataDoacao, String statusDoacao,UsuarioResponseDTO usuario) {
         this.id = id;
         this.doador = doador;
         this.tipoDoacao = tipoDoacao;
         this.dataDoacao = dataDoacao;
+        this.statusDoacao = statusDoacao;
         this.usuario = usuario;
+    }
+
+    public String getStatusDoacao() {
+        return statusDoacao;
+    }
+
+    public void setStatusDoacao(String statusDoacao) {
+        this.statusDoacao = statusDoacao;
     }
 
     public LocalDateTime getDataDoacao() {

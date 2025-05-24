@@ -48,7 +48,7 @@ public class UsuarioController {
             if(passwordEncoder.matches(loginRequest.getSenha(), usuario.getSenha())){
                 String token = "TOKEN_JWT_FICTICIO_PARA_" + usuario.getEmail();
 
-                return ResponseEntity.ok(new LoginResponse(token, usuario.getEmail()));
+                return ResponseEntity.ok(new LoginResponse(token, usuario.getEmail(), usuario.getId()));
             }
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha inválidos.");

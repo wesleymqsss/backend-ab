@@ -10,6 +10,22 @@ public class Doacao {
     @Id
     private String id;
 
+    @Column(name = "status_doacao")
+    private String statusDoacao;
+
+    private String doador;
+
+    private String tipoDoacao;
+    private LocalDateTime dataDoacao;
+
+    public String getStatusDoacao() {
+        return statusDoacao;
+    }
+
+    public void setStatusDoacao(String statusDoacao) {
+        this.statusDoacao = statusDoacao;
+    }
+
     public LocalDateTime getDataDoacao() {
         return dataDoacao;
     }
@@ -49,10 +65,6 @@ public class Doacao {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
-    private String doador;
-    private String tipoDoacao;
-    private LocalDateTime dataDoacao;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
