@@ -1,12 +1,17 @@
 package io.github.ajudabrasil.apiajudabrasil.controller;
 
+import io.github.ajudabrasil.apiajudabrasil.DTO.AtualizarStatusDoacaoDTO;
 import io.github.ajudabrasil.apiajudabrasil.DTO.DoacaoResponseDTO;
 import io.github.ajudabrasil.apiajudabrasil.DTO.UsuarioResponseDTO;
 import io.github.ajudabrasil.apiajudabrasil.model.Doacao;
 import io.github.ajudabrasil.apiajudabrasil.model.Usuario;
 import io.github.ajudabrasil.apiajudabrasil.repository.DoacaoRepository;
 import io.github.ajudabrasil.apiajudabrasil.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -49,6 +54,39 @@ public class DoacaoController {
                        doacao.getUsuario().getNome()
                )
        )).toList();
+    }
+
+    @PatchMapping("/{idDoacao}/status")
+    public ResponseEntity<DoacaoResponseDTO> atualizarStatusDoacao(
+            @PathVariable("idDoacao") String idDoacao,
+            @RequestBody AtualizarStatusDoacaoDTO statusUpdateRequest) {
+
+        Doacao doacaoExistente = doacaoRepository.findById(idDoacao).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Doacao não encontrada para o id: " + idDoacao));
+
+        String novoStatus = statusUpdateRequest.getStatus();
+        if(novoStatus == null || novoStatus.trim().isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status não pode ser vazio.");
+        }
+
+        doacaoExistente.setStatusDoacao(novoStatus);
+
+        Doacao doacaoSalva = doacaoRepository.save(doacaoExistente);
+
+        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
+                doacaoSalva.getUsuario().getId(),
+                doacaoSalva.getUsuario().getNome()
+        );
+
+        DoacaoResponseDTO responseDTO =  new DoacaoResponseDTO(
+                doacaoSalva.getId(),
+                doacaoSalva.getDoador(),
+                doacaoSalva.getTipoDoacao(),
+                doacaoSalva.getDataDoacao(),
+                doacaoSalva.getStatusDoacao(),
+                usuarioResponseDTO
+        );
+
+        return ResponseEntity.ok(responseDTO);
     }
 
 }
