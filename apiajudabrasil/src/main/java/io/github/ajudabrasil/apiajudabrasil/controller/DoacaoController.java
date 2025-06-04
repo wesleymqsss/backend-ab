@@ -48,13 +48,13 @@ public class DoacaoController {
                doacao.getDoador(),
                doacao.getTipoDoacao(),
                doacao.getDataDoacao(),
-               doacao.getStatusDoacao(),
                new UsuarioResponseDTO(
                        doacao.getUsuario().getId(),
                        doacao.getUsuario().getNome()
                )
        )).toList();
     }
+
 
     @PatchMapping("/{idDoacao}/status")
     public ResponseEntity<DoacaoResponseDTO> atualizarStatusDoacao(
@@ -82,11 +82,9 @@ public class DoacaoController {
                 doacaoSalva.getDoador(),
                 doacaoSalva.getTipoDoacao(),
                 doacaoSalva.getDataDoacao(),
-                doacaoSalva.getStatusDoacao(),
                 usuarioResponseDTO
         );
 
         return ResponseEntity.ok(responseDTO);
     }
-
 }

@@ -75,9 +75,45 @@ public class UsuarioController {
     }
 
     @PutMapping("{id}")
-    public void atualizar(@PathVariable("id") String id, @RequestBody Usuario usuario){
-        usuario.setId(id);
-        usuarioRepository.save(usuario);
+    public ResponseEntity<Usuario> atualizar(@PathVariable("id") String id, @RequestBody Usuario dadosAtualizacaoUsuario){
+       Usuario usuarioExistente = usuarioRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado para o ID: " + id));
+
+        if (dadosAtualizacaoUsuario.getEmail() != null) {
+            usuarioExistente.setEmail(dadosAtualizacaoUsuario.getEmail());
+        }
+        if (dadosAtualizacaoUsuario.getNome() != null) {
+            usuarioExistente.setNome(dadosAtualizacaoUsuario.getNome());
+        }
+        if (dadosAtualizacaoUsuario.getTipoPerfil() != null) {
+            usuarioExistente.setTipoPerfil(dadosAtualizacaoUsuario.getTipoPerfil());
+        }
+        if (dadosAtualizacaoUsuario.getCpfCnpj() != null) {
+            usuarioExistente.setCpfCnpj(dadosAtualizacaoUsuario.getCpfCnpj());
+        }
+        if (dadosAtualizacaoUsuario.getCep() != null) {
+            usuarioExistente.setCep(dadosAtualizacaoUsuario.getCep());
+        }
+        if (dadosAtualizacaoUsuario.getTelefone() != null) {
+            usuarioExistente.setTelefone(dadosAtualizacaoUsuario.getTelefone());
+        }
+        if (dadosAtualizacaoUsuario.getCidade() != null) {
+            usuarioExistente.setCidade(dadosAtualizacaoUsuario.getCidade());
+        }
+        if (dadosAtualizacaoUsuario.getBairro() != null) {
+            usuarioExistente.setBairro(dadosAtualizacaoUsuario.getBairro());
+        }
+        if (dadosAtualizacaoUsuario.getNumero() != null) {
+            usuarioExistente.setNumero(dadosAtualizacaoUsuario.getNumero());
+        }
+
+        usuarioExistente.setTipoDoacao(dadosAtualizacaoUsuario.getTipoDoacao());
+        usuarioExistente.setReferenciaEndereco(dadosAtualizacaoUsuario.getReferenciaEndereco());
+        usuarioExistente.setEstado(dadosAtualizacaoUsuario.getEstado());
+        usuarioExistente.setSobreNos(dadosAtualizacaoUsuario.getSobreNos());
+
+        Usuario usuarioAtualizado = usuarioRepository.save(usuarioExistente);
+
+        return ResponseEntity.ok(usuarioAtualizado);
     }
 
     @PutMapping("/alterar-senha")
