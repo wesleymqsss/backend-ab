@@ -91,7 +91,7 @@ public class DoacaoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteDoacao(@PathVariable("{id}") String idDoacao){
+    public ResponseEntity<Void> deleteDoacao(@PathVariable("id") String idDoacao){
         if(!doacaoRepository.existsById(idDoacao)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Doacao nao encontrada");
         }
