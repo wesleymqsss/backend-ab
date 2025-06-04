@@ -7,7 +7,10 @@ import io.github.ajudabrasil.apiajudabrasil.model.SolicitacaoDoacao;
 import io.github.ajudabrasil.apiajudabrasil.model.Usuario;
 import io.github.ajudabrasil.apiajudabrasil.repository.SolicitacaoDoacaoRepository;
 import io.github.ajudabrasil.apiajudabrasil.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,5 +51,15 @@ public class SolicitacaoDoacaoController {
                         solicitacaoDoacao.getUsuario().getNome()
                 )
         )).toList();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteSolicitacao(@PathVariable("{id}") String idSolicitacao){
+        if(!solicitacaoDoacaoRepository.existsById(idSolicitacao)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Doacao nao encontrada");
+        }
+
+        solicitacaoDoacaoRepository.deleteById(idSolicitacao);
+        return ResponseEntity.noContent().build();
     }
 }

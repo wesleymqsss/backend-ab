@@ -48,6 +48,7 @@ public class DoacaoController {
                doacao.getDoador(),
                doacao.getTipoDoacao(),
                doacao.getDataDoacao(),
+               doacao.getStatusDoacao(),
                new UsuarioResponseDTO(
                        doacao.getUsuario().getId(),
                        doacao.getUsuario().getNome()
@@ -82,9 +83,20 @@ public class DoacaoController {
                 doacaoSalva.getDoador(),
                 doacaoSalva.getTipoDoacao(),
                 doacaoSalva.getDataDoacao(),
+                doacaoSalva.getStatusDoacao(),
                 usuarioResponseDTO
         );
 
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteDoacao(@PathVariable("{id}") String idDoacao){
+        if(!doacaoRepository.existsById(idDoacao)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Doacao nao encontrada");
+        }
+
+        doacaoRepository.deleteById(idDoacao);
+        return ResponseEntity.noContent().build();
     }
 }
