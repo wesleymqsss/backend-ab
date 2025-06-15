@@ -1,10 +1,11 @@
 package io.github.ajudabrasil.apiajudabrasil.controller;
 
-import io.github.ajudabrasil.apiajudabrasil.DTO.DoacaoResponseDTO;
 import io.github.ajudabrasil.apiajudabrasil.DTO.SolicitacaoDoacaoResponseDTO;
 import io.github.ajudabrasil.apiajudabrasil.DTO.UsuarioResponseDTO;
 import io.github.ajudabrasil.apiajudabrasil.model.SolicitacaoDoacao;
+import io.github.ajudabrasil.apiajudabrasil.model.SolicitacaoDoacaoHistorico;
 import io.github.ajudabrasil.apiajudabrasil.model.Usuario;
+import io.github.ajudabrasil.apiajudabrasil.repository.SolicitacaoDoacaoHistoricoRepository;
 import io.github.ajudabrasil.apiajudabrasil.repository.SolicitacaoDoacaoRepository;
 import io.github.ajudabrasil.apiajudabrasil.repository.UsuarioRepository;
 import org.springframework.http.HttpStatus;
@@ -21,18 +22,34 @@ public class SolicitacaoDoacaoController {
 
     private final SolicitacaoDoacaoRepository solicitacaoDoacaoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final SolicitacaoDoacaoHistoricoRepository solicitacaoDoacaoHistoricoRepository;
 
-    public SolicitacaoDoacaoController (SolicitacaoDoacaoRepository solicitacaoDoacaoRepository, UsuarioRepository usuarioRepository){
+    public SolicitacaoDoacaoController (SolicitacaoDoacaoRepository solicitacaoDoacaoRepository, UsuarioRepository usuarioRepository, SolicitacaoDoacaoHistoricoRepository solicitacaoDoacaoHistoricoRepository){
         this.solicitacaoDoacaoRepository = solicitacaoDoacaoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.solicitacaoDoacaoHistoricoRepository = solicitacaoDoacaoHistoricoRepository;
     }
-    @PostMapping("{id}")
-    public SolicitacaoDoacao createSolicitacao(@PathVariable("id") String idUsuario, @org.jetbrains.annotations.NotNull @RequestBody SolicitacaoDoacao solicitacaoDoacao){
+
+    @PostMapping("{idBeneficiado}")
+    public SolicitacaoDoacao createSolicitacao(
+            @PathVariable("idBeneficiado") String idUsuarioBeneficiado,
+            @RequestBody SolicitacaoDoacao solicitacaoDoacao
+    ) {
         System.out.println("Doacao recebida: " + solicitacaoDoacao);
-        Usuario usuario = usuarioRepository.findById(idUsuario).orElseThrow(()-> new RuntimeException("usuario nao encontrado: "+ idUsuario));
+
+
+        Usuario usuarioBeneficiado = usuarioRepository.findById(idUsuarioBeneficiado)
+                .orElseThrow(()-> new RuntimeException("Usuário beneficiado não encontrado: " + idUsuarioBeneficiado));
+
+        if (solicitacaoDoacao.getIdSolicitante() == null || solicitacaoDoacao.getIdSolicitante().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID do solicitante é obrigatório.");
+        }
+        Usuario solicitante = usuarioRepository.findById(solicitacaoDoacao.getIdSolicitante())
+                .orElseThrow(() -> new RuntimeException("Solicitante não encontrado: " + solicitacaoDoacao.getIdSolicitante()));
 
         solicitacaoDoacao.setId(UUID.randomUUID().toString());
-        solicitacaoDoacao.setUsuario(usuario);
+        solicitacaoDoacao.setUsuario(usuarioBeneficiado);
+
 
         return solicitacaoDoacaoRepository.save(solicitacaoDoacao);
     }
@@ -44,6 +61,7 @@ public class SolicitacaoDoacaoController {
         return solicitacoes.stream().map(solicitacaoDoacao -> new SolicitacaoDoacaoResponseDTO(
                 solicitacaoDoacao.getId(),
                 solicitacaoDoacao.getSolicitante(),
+                solicitacaoDoacao.getIdSolicitante(),
                 solicitacaoDoacao.getTipoSolicitacao(),
                 solicitacaoDoacao.getDataSolicitacao(),
                 new UsuarioResponseDTO(
@@ -54,10 +72,16 @@ public class SolicitacaoDoacaoController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteSolicitacao(@PathVariable("id") String idSolicitacao){
-        if(!solicitacaoDoacaoRepository.existsById(idSolicitacao)){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Doacao nao encontrada");
-        }
+    public ResponseEntity<Void> deleteSolicitacao(@PathVariable("id") String idSolicitacao) {
+
+        SolicitacaoDoacao solicitacao = solicitacaoDoacaoRepository.findById(idSolicitacao)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Doacao nao encontrada"));
+
+        System.out.println("ID Solicitante na Solicitacao original: " + solicitacao.getIdSolicitante()); // Adicione esta linha
+
+        SolicitacaoDoacaoHistorico historico = new SolicitacaoDoacaoHistorico(solicitacao);
+        solicitacaoDoacaoHistoricoRepository.save(historico);
+
 
         solicitacaoDoacaoRepository.deleteById(idSolicitacao);
         return ResponseEntity.noContent().build();

@@ -17,6 +17,9 @@ public class SolicitacaoDoacaoHistorico {
 
     private String solicitante;
 
+    @Column(name = "id_solicitante")
+    private String idSolicitante;
+
     @Column(name = "tipo_solicitacao")
     private String tipoSolicitacao;
 
@@ -27,24 +30,23 @@ public class SolicitacaoDoacaoHistorico {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @Column(name = "data_rejeicao") // Novo campo para registrar a data da rejeição/exclusão
+    @Column(name = "data_rejeicao")
     private LocalDateTime dataRejeicao;
 
-    // Construtor padrão
     public SolicitacaoDoacaoHistorico() {
     }
 
-    // Construtor para facilitar a conversão de SolicitacaoDoacao para SolicitacaoDoacaoHistorico
+
     public SolicitacaoDoacaoHistorico(SolicitacaoDoacao solicitacaoDoacao) {
         this.id = solicitacaoDoacao.getId();
         this.solicitante = solicitacaoDoacao.getSolicitante();
+        this.idSolicitante = solicitacaoDoacao.getIdSolicitante();
         this.tipoSolicitacao = solicitacaoDoacao.getTipoSolicitacao();
         this.dataSolicitacao = solicitacaoDoacao.getDataSolicitacao();
         this.usuario = solicitacaoDoacao.getUsuario();
-        this.dataRejeicao = LocalDateTime.now(); // Define a data de rejeição como o momento atual
+        this.dataRejeicao = LocalDateTime.now();
     }
 
-    // Getters e Setters
     public String getId() {
         return id;
     }
@@ -59,6 +61,14 @@ public class SolicitacaoDoacaoHistorico {
 
     public void setSolicitante(String solicitante) {
         this.solicitante = solicitante;
+    }
+
+    public String getIdSolicitante() {
+        return idSolicitante;
+    }
+
+    public void setIdSolicitante(String idSolicitante) {
+        this.idSolicitante = idSolicitante;
     }
 
     public String getTipoSolicitacao() {

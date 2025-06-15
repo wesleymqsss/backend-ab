@@ -4,14 +4,16 @@ import java.time.LocalDateTime;
 
 public class SolicitacaoDoacaoResponseDTO {
     private String id;
+    private String idSolicitante;
     private String solicitante;
     private String tipoSolicitacao;
     private LocalDateTime dataSolicitacao;
     private UsuarioResponseDTO usuario;
 
-    public SolicitacaoDoacaoResponseDTO(String id, String solicitante, String tipoSolicitacao, LocalDateTime dataSolicitacao, UsuarioResponseDTO usuario) {
+    public SolicitacaoDoacaoResponseDTO(String id, String solicitante, String idSolicitante, String tipoSolicitacao, LocalDateTime dataSolicitacao, UsuarioResponseDTO usuario) {
         this.dataSolicitacao = dataSolicitacao;
         this.id = id;
+        this.idSolicitante = idSolicitante;
         this.solicitante = solicitante;
         this.tipoSolicitacao = tipoSolicitacao;
         this.usuario = usuario;
@@ -55,5 +57,13 @@ public class SolicitacaoDoacaoResponseDTO {
 
     public void setUsuario(UsuarioResponseDTO usuario) {
         this.usuario = usuario;
+    }
+
+    public String getIdSolicitante() {
+        return idSolicitante;
+    }
+
+    public void setIdSolicitante(String idSolicitante) {
+        this.idSolicitante = idSolicitante;
     }
 }

@@ -1,3 +1,4 @@
+// src/main/java/io/github/ajudabrasil/apiajudabrasil/model/SolicitacaoDoacao.java
 package io.github.ajudabrasil.apiajudabrasil.model;
 
 import jakarta.persistence.Column;
@@ -16,6 +17,9 @@ public class SolicitacaoDoacao {
 
     private String solicitante;
 
+    @Column(name = "id_solicitante")
+    private String idSolicitante;
+
     @Column(name = "tipo_solicitacao")
     private String tipoSolicitacao;
 
@@ -27,14 +31,6 @@ public class SolicitacaoDoacao {
     private Usuario usuario;
 
     public SolicitacaoDoacao() {
-    }
-
-    public LocalDateTime getDataSolicitacao() {
-        return dataSolicitacao;
-    }
-
-    public void setDataSolicitacao(LocalDateTime dataSolicitacao) {
-        this.dataSolicitacao = dataSolicitacao;
     }
 
     public String getId() {
@@ -53,12 +49,28 @@ public class SolicitacaoDoacao {
         this.solicitante = solicitante;
     }
 
+    public String getIdSolicitante() {
+        return idSolicitante;
+    }
+
+    public void setIdSolicitante(String idSolicitante) {
+        this.idSolicitante = idSolicitante;
+    }
+
     public String getTipoSolicitacao() {
         return tipoSolicitacao;
     }
 
     public void setTipoSolicitacao(String tipoSolicitacao) {
         this.tipoSolicitacao = tipoSolicitacao;
+    }
+
+    public LocalDateTime getDataSolicitacao() {
+        return dataSolicitacao;
+    }
+
+    public void setDataSolicitacao(LocalDateTime dataSolicitacao) {
+        this.dataSolicitacao = dataSolicitacao;
     }
 
     public Usuario getUsuario() {
